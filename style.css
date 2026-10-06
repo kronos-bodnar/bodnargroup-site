@@ -132,9 +132,9 @@ hr { border: 0; border-top: 1px solid #555; margin: 1.8vw 0 3vw; }
 .investments h2 { margin-bottom: .4em; }
 .logos {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px 36px;
-  max-width: 960px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 48px;
+  max-width: 760px;
   margin: 3.5vw auto 2vw;
   align-items: center;
 }
@@ -170,7 +170,7 @@ hr { border: 0; border-top: 1px solid #555; margin: 1.8vw 0 3vw; }
   .hero { min-height: 92vh; padding-top: 180px; }
   .intro { padding: 40px 0 28px; }
   .two-col, .pillars, .criteria-grid { grid-template-columns: 1fr; gap: 8px; }
-  .logos { grid-template-columns: repeat(2, 1fr); gap: 18px 24px; }
+  .logos { grid-template-columns: repeat(3, 1fr); gap: 14px 18px; }
   .logo img { width: 240px; }
   .site-header nav { gap: 6px 18px; }
   .contact .two-col { gap: 20px; }
