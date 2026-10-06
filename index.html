@@ -135,20 +135,25 @@
       <h2>Partner with Us</h2>
       <p class="small">Feel free to contact us with any questions.</p>
     </div>
-    <!-- PREVIEW: not wired yet. Go-live: point action at the Formspree endpoint and drop the data-preview attribute. -->
-    <form class="contact-form" action="#" method="POST" data-preview>
+    <!-- Submissions go through FormSubmit (formsubmit.co, free, no account) to accounting@bodnargroup.com.
+         The address only works after someone clicks the one-time "Activate" email FormSubmit sends there. -->
+    <form class="contact-form" action="https://formsubmit.co/accounting@bodnargroup.com" method="POST">
+      <input type="hidden" name="_subject" value="New inquiry from bodnargroup.com">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
       <fieldset>
         <legend>Name</legend>
         <div class="name-row">
-          <label>First Name<span class="req">(required)</span><input type="text" name="first_name" required autocomplete="given-name"></label>
-          <label>Last Name<span class="req">(required)</span><input type="text" name="last_name" required autocomplete="family-name"></label>
+          <label>First Name<span class="req">(required)</span><input type="text" name="First Name" required autocomplete="given-name"></label>
+          <label>Last Name<span class="req">(required)</span><input type="text" name="Last Name" required autocomplete="family-name"></label>
         </div>
       </fieldset>
       <label>Email<span class="req">(required)</span><input type="email" name="email" required autocomplete="email"></label>
-      <label>Message<span class="req">(required)</span><textarea name="message" rows="3" required></textarea></label>
-      <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label>Message<span class="req">(required)</span><textarea name="Message" rows="3" required></textarea></label>
+      <!-- spam trap: real people never fill this in -->
+      <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit">Submit</button>
-      <p class="form-note" hidden></p>
+      <p class="form-note" role="status" hidden></p>
     </form>
   </div>
 </section>
@@ -156,13 +161,21 @@
 </main>
 
 <script>
-  // Preview build: the form isn't connected to an inbox yet, so say so instead of failing silently.
-  document.querySelectorAll('form[data-preview]').forEach(function (f) {
+  // Send in the background so visitors stay on the page; without JS the form still posts normally.
+  document.querySelectorAll('.contact-form').forEach(function (f) {
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var n = f.querySelector('.form-note');
-      n.textContent = 'Preview site: this form is not connected yet.';
-      n.hidden = false;
+      var note = f.querySelector('.form-note'), btn = f.querySelector('button');
+      btn.disabled = true;
+      fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+        method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(f)
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (String(d.success) !== 'true') throw new Error(d.message || 'failed');
+        f.reset();
+        note.textContent = 'Thank you! We’ll be in touch soon.';
+      }).catch(function () {
+        note.textContent = 'Sorry, that didn’t go through. Please email accounting@bodnargroup.com.';
+      }).finally(function () { note.hidden = false; btn.disabled = false; });
     });
   });
 </script>
